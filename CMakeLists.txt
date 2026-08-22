@@ -16,6 +16,7 @@ add_library(techpulse_config
     src/scoring/scoring.cpp
     src/sources/hacker_news.cpp
     src/sources/github.cpp
+    src/sources/rss.cpp
 )
 target_include_directories(techpulse_config PUBLIC include)
 target_link_libraries(techpulse_config PRIVATE CURL::libcurl)

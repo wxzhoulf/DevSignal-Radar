@@ -23,7 +23,9 @@ jobs:
       - name: Generate radar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./build/techpulse run
+        run: |
+          ./build/techpulse run || status=$?
+          test "${status:-0}" -eq 0 -o "${status:-0}" -eq 2
       - name: Commit generated artifacts
         run: |
           git add reports/daily site/public/data

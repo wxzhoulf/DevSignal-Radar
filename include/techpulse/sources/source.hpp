@@ -11,6 +11,7 @@ namespace techpulse::sources {
 struct HttpResponse {
     int status{};
     std::string body;
+    std::string error;
 };
 
 using HttpGet = std::function<HttpResponse(const std::string& url)>;
@@ -21,4 +22,3 @@ struct FetchResult {
 };
 
 }  // namespace techpulse::sources
-

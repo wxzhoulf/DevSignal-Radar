@@ -6,14 +6,18 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+find_package(CURL REQUIRED)
+
 add_library(techpulse_config
     src/config/radar_config.cpp
     src/dedup/deduplicate.cpp
     src/normalize/normalize.cpp
+    src/net/http_client.cpp
     src/scoring/scoring.cpp
     src/sources/hacker_news.cpp
 )
 target_include_directories(techpulse_config PUBLIC include)
+target_link_libraries(techpulse_config PRIVATE CURL::libcurl)
 
 add_executable(techpulse src/main.cpp)
 target_link_libraries(techpulse PRIVATE techpulse_config)

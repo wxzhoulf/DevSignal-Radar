@@ -17,6 +17,12 @@ ctest --test-dir build --output-on-failure
 
 On multi-config generators, append `--config Debug` to build and test commands.
 
+Fetch a small live Hacker News sample:
+
+```sh
+./build/techpulse fetch-hn --limit 1
+```
+
 ## Configuration
 
 `config/radar.yaml` defines the user's topics, weights, include/exclude terms, and report thresholds. `techpulse validate` exits with code `10` for malformed or invalid configuration and reports ignored unknown fields as warnings.

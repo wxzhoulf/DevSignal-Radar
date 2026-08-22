@@ -17,7 +17,9 @@ jobs:
         with:
           vcpkgJsonGlob: 'vcpkg.json'
       - name: Configure and build
-        run: cmake -S . -B build -DBUILD_TESTING=OFF -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+        run: |
+          cmake -S . -B build -DBUILD_TESTING=OFF -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+          cmake --build build
       - name: Generate radar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

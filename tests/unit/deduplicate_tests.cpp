@@ -36,10 +36,10 @@ int main() {
 
     auto repeated = github;
     repeated.summary_raw = "More complete notes";
+    repeated.discussion_url = "https://example.com/discussion";
     const auto same_source = techpulse::dedup::deduplicate_exact({github, repeated});
     expect(same_source.items.size() == 1, "same source key should merge");
     expect(same_source.source_key_merges == 1, "source-key merge count should be recorded");
     expect(same_source.items.front().summary_raw == "More complete notes", "more complete primary item should win");
     return failures == 0 ? 0 : 1;
 }
-

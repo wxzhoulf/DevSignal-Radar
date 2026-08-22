@@ -14,6 +14,7 @@ add_library(techpulse_config
     src/normalize/normalize.cpp
     src/net/http_client.cpp
     src/scoring/scoring.cpp
+    src/publish/report.cpp
     src/sources/hacker_news.cpp
     src/sources/github.cpp
     src/sources/rss.cpp

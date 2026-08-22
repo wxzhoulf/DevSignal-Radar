@@ -3,6 +3,9 @@
 #include "techpulse/sources/hacker_news.hpp"
 #include "techpulse/sources/github.hpp"
 #include "techpulse/sources/rss.hpp"
+#include "techpulse/dedup/deduplicate.hpp"
+#include "techpulse/scoring/scoring.hpp"
+#include "techpulse/publish/report.hpp"
 #include <cstdlib>
 
 #include <iostream>
@@ -55,6 +58,20 @@ int main(int argc, char* argv[]) {
         const auto result = techpulse::sources::fetch_rss(argv[2], [&client](const std::string& url) { return client.get(url); });
         for (const auto& item : result.items) std::cout << item.title << '\t' << item.url << '\n';
         return result.items.empty() ? 20 : 0;
+    }
+    if (std::string_view(argv[1]) == "run") {
+        const auto config = techpulse::config::load_and_validate("config/radar.yaml");
+        if (!config.ok()) return 10;
+        techpulse::net::HttpClient client;
+        if (const char* token = std::getenv("GITHUB_TOKEN")) client.set_bearer_token(token);
+        auto hn = techpulse::sources::HackerNewsSource{3}.fetch([&](const std::string& url){ return client.get(url); });
+        auto gh = techpulse::sources::fetch_github_repositories("C++", [&](const std::string& url){ return client.get(url); });
+        hn.items.insert(hn.items.end(), std::make_move_iterator(gh.items.begin()), std::make_move_iterator(gh.items.end()));
+        hn.errors.insert(hn.errors.end(), gh.errors.begin(), gh.errors.end());
+        auto unique = techpulse::dedup::deduplicate_exact(std::move(hn.items)); std::vector<techpulse::model::ScoredItem> scored;
+        const auto now = std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now()); for (const auto& item : unique.items) scored.push_back(techpulse::scoring::score_item(item,config.config,now));
+        scored=techpulse::scoring::rank_items(std::move(scored)); char date[11]{}; const auto t=std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()); std::strftime(date,sizeof(date),"%F",std::gmtime(&t));
+        return techpulse::publish::write_daily_report(".",date,scored,hn.errors)?(hn.errors.empty()?0:2):30;
     }
 
     if (std::string_view(argv[1]) != "validate") {

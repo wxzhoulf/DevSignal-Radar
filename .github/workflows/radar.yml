@@ -1,0 +1,28 @@
+name: Run radar
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 23 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: radar-production
+  cancel-in-progress: false
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgJsonGlob: 'vcpkg.json'
+      - name: Configure and build
+        run: cmake -S . -B build -DBUILD_TESTING=OFF -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+      - name: Generate radar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./build/techpulse run
+      - name: Commit generated artifacts
+        run: |
+          git add reports/daily site/public/data
+          git diff --cached --quiet || (git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git commit -m "chore(radar): update $(date -u +%F)" && git push)

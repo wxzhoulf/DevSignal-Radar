@@ -79,6 +79,7 @@ ValidationResult load_and_validate(const std::filesystem::path& path) {
         if (line == "output:") { section = Section::output; current_topic = nullptr; continue; }
         if (line == "include:") { section = Section::include; continue; }
         if (line == "exclude:") { section = Section::exclude; continue; }
+        if (line == "include: []" || line == "exclude: []") { section = Section::topics; continue; }
 
         if (line.rfind("- id:", 0) == 0) {
             if (section != Section::topics && section != Section::include && section != Section::exclude) {

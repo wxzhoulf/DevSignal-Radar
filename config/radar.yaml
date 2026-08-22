@@ -1,0 +1,48 @@
+version: 1
+timezone: Asia/Shanghai
+language: zh-CN
+
+topics:
+  - id: cpp_systems
+    name: C++ 与系统软件
+    weight: 1.0
+    include:
+      - C++
+      - cpp
+      - concurrency
+      - toolchain
+      - compiler
+    exclude:
+      - game tutorial
+  - id: openharmony
+    name: OpenHarmony
+    weight: 1.0
+    include:
+      - OpenHarmony
+      - ArkCompiler
+      - Worker
+    exclude: []
+  - id: linux
+    name: Linux 与可观测性
+    weight: 0.9
+    include:
+      - Linux
+      - GDB
+      - ASan
+      - tracing
+    exclude: []
+  - id: ai_agents
+    name: AI 编程与 Agent
+    weight: 0.55
+    include:
+      - AI agent
+      - Codex
+      - Claude Code
+    exclude:
+      - prompt collection
+
+output:
+  daily_limit: 10
+  weekly_limit: 30
+  minimum_score: 45
+

@@ -4,7 +4,7 @@ An explainable technical-signal radar for systems software engineers. It will ag
 
 ## Current status
 
-Stage 0 is in progress. The repository currently provides the C++20 `techpulse validate` command, an example radar configuration, and cross-platform CI.
+The foundation now includes the C++20 `techpulse validate` command, normalized `RadarItem` records, exact provenance-preserving deduplication, an example configuration, and cross-platform CI.
 
 ## Quick start
 

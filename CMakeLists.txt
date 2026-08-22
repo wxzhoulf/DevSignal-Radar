@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(techpulse_config
     src/config/radar_config.cpp
+    src/dedup/deduplicate.cpp
     src/normalize/normalize.cpp
 )
 target_include_directories(techpulse_config PUBLIC include)
@@ -23,6 +24,9 @@ if(BUILD_TESTING)
     add_executable(normalize_tests tests/unit/normalize_tests.cpp)
     target_link_libraries(normalize_tests PRIVATE techpulse_config)
     add_test(NAME normalize_tests COMMAND normalize_tests)
+    add_executable(deduplicate_tests tests/unit/deduplicate_tests.cpp)
+    target_link_libraries(deduplicate_tests PRIVATE techpulse_config)
+    add_test(NAME deduplicate_tests COMMAND deduplicate_tests)
     add_test(NAME validate_example COMMAND techpulse validate --config config/radar.yaml)
     set_tests_properties(validate_example PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endif()

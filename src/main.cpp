@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
         techpulse::net::HttpClient client;
         if (const char* token = std::getenv("GITHUB_TOKEN")) client.set_bearer_token(token);
         auto hn = techpulse::sources::HackerNewsSource{3}.fetch([&](const std::string& url){ return client.get(url); });
-        auto gh = techpulse::sources::fetch_github_repositories("C++", [&](const std::string& url){ return client.get(url); });
+        auto gh = techpulse::sources::fetch_github_repositories("language:C++ stars:>20", [&](const std::string& url){ return client.get(url); });
         hn.items.insert(hn.items.end(), std::make_move_iterator(gh.items.begin()), std::make_move_iterator(gh.items.end()));
         hn.errors.insert(hn.errors.end(), gh.errors.begin(), gh.errors.end());
         auto unique = techpulse::dedup::deduplicate_exact(std::move(hn.items)); std::vector<techpulse::model::ScoredItem> scored;

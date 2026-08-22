@@ -10,6 +10,7 @@ add_library(techpulse_config
     src/config/radar_config.cpp
     src/dedup/deduplicate.cpp
     src/normalize/normalize.cpp
+    src/scoring/scoring.cpp
 )
 target_include_directories(techpulse_config PUBLIC include)
 
@@ -27,6 +28,9 @@ if(BUILD_TESTING)
     add_executable(deduplicate_tests tests/unit/deduplicate_tests.cpp)
     target_link_libraries(deduplicate_tests PRIVATE techpulse_config)
     add_test(NAME deduplicate_tests COMMAND deduplicate_tests)
+    add_executable(scoring_tests tests/unit/scoring_tests.cpp)
+    target_link_libraries(scoring_tests PRIVATE techpulse_config)
+    add_test(NAME scoring_tests COMMAND scoring_tests)
     add_test(NAME validate_example COMMAND techpulse validate --config config/radar.yaml)
     set_tests_properties(validate_example PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endif()

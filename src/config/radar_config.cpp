@@ -111,6 +111,7 @@ ValidationResult load_and_validate(const std::filesystem::path& path) {
             if (current_topic != nullptr && indentation >= 4 && section == Section::topics) {
                 if (key == "name") current_topic->name = value;
                 else if (key == "weight") current_topic->weight = std::stod(value);
+                else if ((key == "include" || key == "exclude") && value == "[]") {}
                 else result.config.warnings.push_back("unknown topic field ignored at line " + std::to_string(line_number) + ": " + key);
             } else if (section == Section::output && indentation >= 2) {
                 if (key == "daily_limit") result.config.output.daily_limit = std::stoi(value);
@@ -137,4 +138,3 @@ ValidationResult load_and_validate(const std::filesystem::path& path) {
 }
 
 }  // namespace techpulse::config
-

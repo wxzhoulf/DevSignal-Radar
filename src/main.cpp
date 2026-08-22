@@ -1,6 +1,8 @@
 #include "techpulse/config/radar_config.hpp"
 #include "techpulse/net/http_client.hpp"
 #include "techpulse/sources/hacker_news.hpp"
+#include "techpulse/sources/github.hpp"
+#include <cstdlib>
 
 #include <iostream>
 #include <string_view>
@@ -8,7 +10,8 @@
 namespace {
 void print_usage() {
     std::cerr << "Usage: techpulse validate [--config <path>]\n"
-                 "       techpulse fetch-hn [--limit <count>]\n";
+                 "       techpulse fetch-hn [--limit <count>]\n"
+                 "       techpulse fetch-github <query>\n";
 }
 }
 
@@ -33,6 +36,15 @@ int main(int argc, char* argv[]) {
         });
         for (const auto& error : result.errors) std::cerr << "warning: " << error << '\n';
         for (const auto& item : result.items) std::cout << item.source_type << '\t' << item.title << '\t' << item.url << '\n';
+        return result.items.empty() ? 20 : (result.errors.empty() ? 0 : 2);
+    }
+    if (std::string_view(argv[1]) == "fetch-github") {
+        if (argc != 3) { print_usage(); return 10; }
+        techpulse::net::HttpClient client;
+        if (const char* token = std::getenv("GITHUB_TOKEN")) client.set_bearer_token(token);
+        const auto result = techpulse::sources::fetch_github_repositories(argv[2], [&client](const std::string& url) { return client.get(url); });
+        for (const auto& error : result.errors) std::cerr << "warning: " << error << '\n';
+        for (const auto& item : result.items) std::cout << item.title << '\t' << item.metrics.stars.value_or(0) << '\t' << item.url << '\n';
         return result.items.empty() ? 20 : (result.errors.empty() ? 0 : 2);
     }
 
